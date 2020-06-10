@@ -12,10 +12,9 @@ end
 
 # Slack Ruby client
 $client = Slack::Web::Client.new
-# Orders object
+# Plays object
 $plays = {}
-# Menu class imported from Menu.rb
-game = Game.new
+
 
 class API < Sinatra::Base
   # Send response of message to response_url
