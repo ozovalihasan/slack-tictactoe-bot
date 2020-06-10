@@ -4,10 +4,6 @@ require 'slack-ruby-client'
 require 'json'
 require 'uri'
 require 'net/http'
-require_relative 'menu'
-require_relative 'lib/board'
-require_relative 'lib/game'
-require_relative 'lib/player'
 
 Slack.configure do |config|
 	config.token = ENV['SLACK_BOT_TOKEN']
