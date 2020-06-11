@@ -1,7 +1,7 @@
 require 'slack-ruby-client'
 
-class Bot
-  def self.new_game(question)
+class Bot # rubocop:todo Metrics/ClassLength
+  def self.new_game(question) # rubocop:todo Metrics/MethodLength
     [{
       color: '#5DFF00',
       title: question,
@@ -45,24 +45,18 @@ class Bot
     )
   end
 
-  def self.start_game(user_id, url)
-    # Check if game already exists
+  def self.start_game(user_id)
+    # Starts new game
+    @plays[user_id] = {
+      positions: [1, 2, 3, 4, 5, 6, 7, 8, 9], turn_number: 0
+    }
+  end
 
-    if @plays[user_id].nil?
-      # Starts new game
-      @plays[user_id] = {
-        positions: [1, 2, 3, 4, 5, 6, 7, 8, 9], turn_number: 0
-      }
-
-    end
-
-    # Sends menu with play:select_position callback
-    msg = {
+  def self.show_board(user_id)
+    {
       text: 'Please choose your position?',
       attachments: board_last(user_id)
     }
-    # Send message
-    API.send_response(url, msg)
   end
 
   def self.board_last(user_id)
@@ -88,11 +82,14 @@ class Bot
     attachment
   end
 
+  def self.plays(user_id)
+    @plays ||= { user_id => nil }
+  end
+
   # Check if user has order to handle dm
   def self.handle_direct_message(msg)
     user_id = msg['user']
-    @plays ||= { user_id => nil }
-
+    plays(user_id)
     if @plays[user_id].nil?
       intro(user_id)
     else
@@ -104,8 +101,7 @@ class Bot
     end
   end
 
-  def self.update_board(request_data, chosen, symbol)
-    user_id = request_data['user']['id']
+  def self.update_board(user_id, chosen, symbol)
     # update chosen number
     @plays[user_id][:positions][chosen - 1] = symbol
     increase_turn_number(user_id)
@@ -116,6 +112,7 @@ class Bot
   end
 
   def self.choose_position(user_id)
+    @purpose = 'choose'
     available_positions = check_positions(user_id)
     if available_positions.class == Array
       return available_positions.uniq.select { |item| available_positions.count(item) == 1 }[0]
@@ -125,6 +122,7 @@ class Bot
   end
 
   def self.check_winner_draw(user_id, url, msg)
+    @purpose = 'win'
     winner = check_positions(user_id)
     turn = @plays[user_id][:turn_number]
     if (winner.class == String) || turn == 9
@@ -162,9 +160,11 @@ class Bot
   end
 
   def self.check_rows(grid)
-    grid.each { |row| return row.first if all_equal?(row) }
-    grid.each { |row| return row if any_equal?(row) && row.any? { |item| item.class == Integer } }
-
+    if @purpose == 'win'
+      grid.each { |row| return row.first if all_equal?(row) }
+    else
+      grid.each { |row| return row if any_equal?(row) && row.any? { |item| item.class == Integer } }
+    end
     nil
   end
 

@@ -43,7 +43,7 @@ class API < Sinatra::Base
     end
   end
 
-  post '/slack/attachments' do
+  post '/slack/attachments' do # rubocop:todo Metrics/BlockLength
     request.body.rewind
     request_data = request.body.read
 
@@ -53,29 +53,33 @@ class API < Sinatra::Base
     # Parse and remove "payload=" from beginning of string
     request_data = JSON.parse(request_data.sub!('payload=', ''))
     url = request_data['response_url']
+    user_id = request_data['user']['id']
+    msg = request_data['original_message']
 
     case request_data['callback_id']
       # Start game callback
     when 'play:start'
 
       # Modify message to acknowledge
-      msg = request_data['original_message']
       msg['text'] = ':video_game: OK I\'m starting the game.'
       msg['attachments'] = []
       API.send_response(url, msg)
-      Bot.start_game(request_data['user']['id'], url)
+      Bot.start_game(user_id)
+      msg = Bot.show_board(user_id)
+      API.send_response(url, msg)
       # Select type callback
     when 'play:select_position'
 
       loop do
-        user_id = request_data['user']['id']
-        msg = request_data['original_message']
         chosen = request_data['actions'][0]['value'].to_i
         if chosen.zero?
-          Bot.start_game(user_id, url)
+
+          msg = Bot.show_board(user_id)
+          API.send_response(url, msg)
+
           break
         end
-        Bot.update_board(request_data, chosen, 'X')
+        Bot.update_board(user_id, chosen, 'X')
         break if Bot.check_winner_draw(user_id, url, msg)
 
         msg['text'] = ' It is my turn.'
@@ -85,18 +89,17 @@ class API < Sinatra::Base
         chosen = Bot.choose_position(user_id)
         msg['text'] = "I\'m chosing #{chosen}."
         API.send_response(url, msg)
-        Bot.update_board(request_data, chosen, 'O')
+        Bot.update_board(user_id, chosen, 'O')
         sleep(1)
 
         break if Bot.check_winner_draw(user_id, url, msg)
 
-        Bot.start_game(user_id, url)
+        msg = Bot.show_board(user_id)
+        API.send_response(url, msg)
         break
       end
       # Select option callback
     when 'play:finish'
-      user_id = request_data['user']['id']
-      msg = request_data['original_message']
       msg['text'] = ':ok: If you want to play more, I will be here. Only send any message to me '
       msg['attachments'] = []
       API.send_response(url, msg)
