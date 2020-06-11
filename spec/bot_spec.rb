@@ -1,1 +1,1 @@
-require_relative '../bot'
+require_relative '../lib/bot'
