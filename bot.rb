@@ -30,7 +30,6 @@ class API < Sinatra::Base
     request['content-type'] = 'application/json'
     request.body = JSON[msg]
     http.request(request)
-    p msg
   end
 
   post '/slack/events' do
@@ -71,7 +70,7 @@ class API < Sinatra::Base
     url = request_data['response_url']
 
     case request_data['callback_id']
-      # Start order callback
+      # Start game callback
     when 'play:start'
 
       # Modify message to acknowledge
@@ -79,22 +78,21 @@ class API < Sinatra::Base
       msg['text'] = ':video_game: OK I\'m starting the game.'
       msg['attachments'] = []
       API.send_response(url, msg)
-      Bot.start_game(request_data['user']['id'], request_data['original_message'], url)
+      Bot.start_game(request_data['user']['id'], url)
       # Select type callback
     when 'play:select_position'
-      
-      begin
+
+      loop do
         user_id = request_data['user']['id']
         msg = request_data['original_message']
         chosen = request_data['actions'][0]['value'].to_i
         if chosen.zero?
-          Bot.start_game(user_id, request_data['original_message'], url)
+          Bot.start_game(user_id, url)
           break
         end
         Bot.update_board(request_data, chosen, 'X')
         break if Bot.check_winner_draw(user_id, url, msg)
 
-        
         msg['text'] = ' It is my turn.'
         msg['attachments'] = Bot.board_last(user_id)
         API.send_response(url, msg)
@@ -107,9 +105,9 @@ class API < Sinatra::Base
 
         break if Bot.check_winner_draw(user_id, url, msg)
 
-        Bot.start_game(user_id, request_data['original_message'], url)
-      end while false
-
+        Bot.start_game(user_id, url)
+        break
+      end
       # Select option callback
     when 'play:finish'
       msg = request_data['original_message']
@@ -133,17 +131,10 @@ class Events
 end
 
 class Bot
-
-  def self.intro(user_id)
-    
-
-    # Open IM
-    client = Slack::Web::Client.new
-    res = client.conversations_open(users: user_id)
-    # Attachment with play:start callback ID
-    attachments = [{
+  def self.new_game(question)
+    [{
       color: '#5DFF00',
-      title: 'Do you want to start :question:',
+      title: question,
       callback_id: 'play:start',
       actions: [
         {
@@ -153,8 +144,7 @@ class Bot
           value: 'play:start'
         }
       ]
-    },
-    {
+    }, {
       color: '#FF0000',
       title: '',
       callback_id: 'play:finish',
@@ -167,23 +157,30 @@ class Bot
         }
       ]
     }]
-    unless res.channel.id.nil?
-      # Send message
-      client.chat_postMessage(
-        channel: res.channel.id,
-        text: "I am tic-tac-toe bot, and I\'m here to play tic-tac-toe :x: :o: ",
-        attachments: attachments.to_json
-      )
-    end
   end
 
-  def self.start_game(user_id, msg, url)
-    # Check if game already exists
-    
+  def self.intro(user_id)
+    # Open IM
+    client = Slack::Web::Client.new
+    res = client.conversations_open(users: user_id)
+    # Attachment with play:start callback ID
+    attachments = new_game('Do you want to start :question:')
+    return if res.channel.id.nil?
 
-    if @@plays[user_id].nil?
+    # Send message
+    client.chat_postMessage(
+      channel: res.channel.id,
+      text: "I am tic-tac-toe bot, and I\'m here to play tic-tac-toe :x: :o: ",
+      attachments: attachments.to_json
+    )
+  end
+
+  def self.start_game(user_id, url)
+    # Check if game already exists
+
+    if @plays[user_id].nil?
       # Starts new game
-      @@plays[user_id] = {
+      @plays[user_id] = {
         positions: [1, 2, 3, 4, 5, 6, 7, 8, 9], turn_number: 0
       }
 
@@ -196,39 +193,37 @@ class Bot
     }
     # Send message
     API.send_response(url, msg)
-    
   end
 
   def self.board_last(user_id)
     counter = 0
-    attachment =[]
-    3.times do
-
-      action = []
-      3.times do
-        action << {
-          name: "button#{counter+1}",
-          text: @@plays[user_id][:positions][counter].to_s,
-          type: 'button',
-          value: @@plays[user_id][:positions][counter]
-        }
-        counter +=1
-      end
+    attachment = []
+    3.times do |row|
       attachment << {
         color: '#FFA500',
         callback_id: 'play:select_position',
         title: '',
-        actions: action
+        actions: []
       }
+      3.times do
+        attachment[row][:actions] << {
+          name: "button#{counter + 1}",
+          text: @plays[user_id][:positions][counter].to_s,
+          type: 'button',
+          value: @plays[user_id][:positions][counter]
+        }
+        counter += 1
+      end
     end
-
+    attachment
   end
-  
+
   # Check if user has order to handle dm
   def self.handle_direct_message(msg)
     user_id = msg['user']
-    @@plays ||= {user_id => nil }
-    if @@plays[user_id].nil?
+    @plays ||= { user_id => nil }
+
+    if @plays[user_id].nil?
       intro(user_id)
     else
       client = Slack::Web::Client.new
@@ -242,13 +237,12 @@ class Bot
   def self.update_board(request_data, chosen, symbol)
     user_id = request_data['user']['id']
     # update chosen number
-    @@plays[user_id][:positions][chosen - 1] = symbol
+    @plays[user_id][:positions][chosen - 1] = symbol
     increase_turn_number(user_id)
   end
 
   def self.increase_turn_number(user_id)
-    @@plays[user_id][:turn_number] += 1
-    
+    @plays[user_id][:turn_number] += 1
   end
 
   def self.choose_position(user_id)
@@ -257,54 +251,29 @@ class Bot
       return available_positions.uniq.select { |item| available_positions.count(item) == 1 }[0]
     end
 
-    @@plays[user_id][:positions].select { |item| item.class == Integer }.sample
+    @plays[user_id][:positions].select { |item| item.class == Integer }.sample
   end
 
   def self.check_winner_draw(user_id, url, msg)
     winner = check_positions(user_id)
-    turn = @@plays[user_id][:turn_number]
+    turn = @plays[user_id][:turn_number]
     if (winner.class == String) || turn == 9
-      msg['text'] = ':tada::trophy:  Congratulations! :x: You are winner :clap:' if winner == 'X'
+      msg['text'] = ':tada::trophy:  Congratulations! :x: You are winner :clap:'
       msg['text'] = ' I am winner. :cry: Sorry for you. Don\'t worry, this is only a game.' if winner == 'O'
       msg['text'] = ' No winner. This is a draw :handshake:' if turn == 9
-
-      msg['attachments'] = [{
-        color: '#5DFF00',
-        title: 'Do you want to play one more game:question:',
-        callback_id: 'play:start',
-        actions: [
-          {
-            name: 'start',
-            text: '   YES   ',
-            type: 'button',
-            value: 'play:start'
-          }
-
-        ]
-      }, {
-        color: '#FF0000',
-        title: '',
-        callback_id: 'play:finish',
-        actions: [
-          {
-            name: 'start',
-            text: '   NO   ',
-            type: 'button',
-            value: 'play:finish'
-          }
-        ]
-      }]
-
+      msg['attachments'] = new_game('Do you want to play one more game:question:')
       API.send_response(url, msg)
-      @@plays[user_id] = nil
+      @plays[user_id] = nil
       return winner if winner
-      return true if turn == 9
+
+      return 'draw'
+
     end
     false
   end
 
   def self.check_positions(user_id)
-    board = @@plays[user_id][:positions]
+    board = @plays[user_id][:positions]
     grid = [
       [board[0], board[1], board[2]],
       [board[3], board[4], board[5]],
