@@ -18,9 +18,7 @@ Slack.configure do |config|
   raise 'Missing API token' unless config.token
 end
 
-
 # Plays object
-$plays = {}
 
 class API < Sinatra::Base
   # Send response of message to response_url
@@ -32,6 +30,7 @@ class API < Sinatra::Base
     request['content-type'] = 'application/json'
     request.body = JSON[msg]
     http.request(request)
+    p msg
   end
 
   post '/slack/events' do
@@ -74,6 +73,7 @@ class API < Sinatra::Base
     case request_data['callback_id']
       # Start order callback
     when 'play:start'
+
       # Modify message to acknowledge
       msg = request_data['original_message']
       msg['text'] = ':video_game: OK I\'m starting the game.'
@@ -82,7 +82,7 @@ class API < Sinatra::Base
       Bot.start_game(request_data['user']['id'], request_data['original_message'], url)
       # Select type callback
     when 'play:select_position'
-
+      
       begin
         user_id = request_data['user']['id']
         msg = request_data['original_message']
@@ -94,13 +94,11 @@ class API < Sinatra::Base
         Bot.update_board(request_data, chosen, 'X')
         break if Bot.check_winner_draw(user_id, url, msg)
 
-        if $plays[user_id][:turn_number] < 9
-          msg['text'] = ' It is my turn.'
-          msg['attachments'] = Bot.board_last(user_id)
-          API.send_response(url, msg)
-        end
+        
+        msg['text'] = ' It is my turn.'
+        msg['attachments'] = Bot.board_last(user_id)
+        API.send_response(url, msg)
         sleep(1)
-
         chosen = Bot.choose_position(user_id)
         msg['text'] = "I\'m chosing #{chosen}."
         API.send_response(url, msg)
@@ -135,7 +133,10 @@ class Events
 end
 
 class Bot
+
   def self.intro(user_id)
+    
+
     # Open IM
     client = Slack::Web::Client.new
     res = client.conversations_open(users: user_id)
@@ -153,19 +154,19 @@ class Bot
         }
       ]
     },
-                   {
-                     color: '#FF0000',
-                     title: '',
-                     callback_id: 'play:finish',
-                     actions: [
-                       {
-                         name: 'start',
-                         text: '   NO   ',
-                         type: 'button',
-                         value: 'play:finish'
-                       }
-                     ]
-                   }]
+    {
+      color: '#FF0000',
+      title: '',
+      callback_id: 'play:finish',
+      actions: [
+        {
+          name: 'start',
+          text: '   NO   ',
+          type: 'button',
+          value: 'play:finish'
+        }
+      ]
+    }]
     unless res.channel.id.nil?
       # Send message
       client.chat_postMessage(
@@ -178,13 +179,16 @@ class Bot
 
   def self.start_game(user_id, msg, url)
     # Check if game already exists
-    if $plays[user_id].nil?
+    
+
+    if @@plays[user_id].nil?
       # Starts new game
-      $plays[user_id] = {
+      @@plays[user_id] = {
         positions: [1, 2, 3, 4, 5, 6, 7, 8, 9], turn_number: 0
       }
 
     end
+
     # Sends menu with play:select_position callback
     msg = {
       text: 'Please choose your position?',
@@ -192,89 +196,40 @@ class Bot
     }
     # Send message
     API.send_response(url, msg)
+    
   end
 
   def self.board_last(user_id)
-    [{
-      color: '#FFA500',
-      callback_id: 'play:select_position',
-      text: '',
-      actions: [
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][0].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][0]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][1].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][1]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][2].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][2]
-        }
-      ]
-    }, {
-      color: '#FFA500',
-      title: '',
-      callback_id: 'play:select_position',
-      actions: [
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][3].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][3]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][4].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][4]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][5].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][5]
-        }
-      ]
-    }, {
-      color: '#FFA500',
-      title: '',
-      callback_id: 'play:select_position',
-      actions: [
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][6].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][6]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][7].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][7]
-        },
-        {
-          name: 'start',
-          text: $plays[user_id][:positions][8].to_s,
-          type: 'button',
-          value: $plays[user_id][:positions][8]
-        }
-      ]
-    }]
-  end
+    counter = 0
+    attachment =[]
+    3.times do
 
+      action = []
+      3.times do
+        action << {
+          name: "button#{counter+1}",
+          text: @@plays[user_id][:positions][counter].to_s,
+          type: 'button',
+          value: @@plays[user_id][:positions][counter]
+        }
+        counter +=1
+      end
+      attachment << {
+        color: '#FFA500',
+        callback_id: 'play:select_position',
+        title: '',
+        actions: action
+      }
+    end
+
+  end
+  
   # Check if user has order to handle dm
   def self.handle_direct_message(msg)
-    user = msg['user']
-    if $plays[user].nil?
-      intro(user)
+    user_id = msg['user']
+    @@plays ||= {user_id => nil }
+    if @@plays[user_id].nil?
+      intro(user_id)
     else
       client = Slack::Web::Client.new
       client.chat_postMessage(
@@ -287,12 +242,13 @@ class Bot
   def self.update_board(request_data, chosen, symbol)
     user_id = request_data['user']['id']
     # update chosen number
-    $plays[user_id][:positions][chosen - 1] = symbol
+    @@plays[user_id][:positions][chosen - 1] = symbol
     increase_turn_number(user_id)
   end
 
   def self.increase_turn_number(user_id)
-    $plays[user_id][:turn_number] += 1
+    @@plays[user_id][:turn_number] += 1
+    
   end
 
   def self.choose_position(user_id)
@@ -301,14 +257,12 @@ class Bot
       return available_positions.uniq.select { |item| available_positions.count(item) == 1 }[0]
     end
 
-    $plays[user_id][:positions].select { |item| item.class == Integer }.sample
+    @@plays[user_id][:positions].select { |item| item.class == Integer }.sample
   end
 
   def self.check_winner_draw(user_id, url, msg)
     winner = check_positions(user_id)
-    turn = $plays[user_id][:turn_number]
-    p turn
-    p '============='
+    turn = @@plays[user_id][:turn_number]
     if (winner.class == String) || turn == 9
       msg['text'] = ':tada::trophy:  Congratulations! :x: You are winner :clap:' if winner == 'X'
       msg['text'] = ' I am winner. :cry: Sorry for you. Don\'t worry, this is only a game.' if winner == 'O'
@@ -342,14 +296,15 @@ class Bot
       }]
 
       API.send_response(url, msg)
-      $plays[user_id] = nil
-      return winner
+      @@plays[user_id] = nil
+      return winner if winner
+      return true if turn == 9
     end
     false
   end
 
   def self.check_positions(user_id)
-    board = $plays[user_id][:positions]
+    board = @@plays[user_id][:positions]
     grid = [
       [board[0], board[1], board[2]],
       [board[3], board[4], board[5]],
