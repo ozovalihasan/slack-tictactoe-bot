@@ -5,15 +5,22 @@ require 'json'
 require 'uri'
 require 'net/http'
 
+module Slack
+  module Web
+    class Client
+      include Api::Endpoints::Conversations
+    end
+  end
+end
+
 Slack.configure do |config|
   config.token = ENV['SLACK_BOT_TOKEN']
   raise 'Missing API token' unless config.token
 end
 
-# Slack Ruby client
-$client = Slack::Web::Client.new # rubocop:todo Style/GlobalVars
+
 # Plays object
-$plays = {} # rubocop:todo Style/GlobalVars
+$plays = {}
 
 class API < Sinatra::Base
   # Send response of message to response_url
@@ -53,7 +60,7 @@ class API < Sinatra::Base
     end
   end
 
-  post '/slack/attachments' do # rubocop:todo Metrics/BlockLength
+  post '/slack/attachments' do
     request.body.rewind
     request_data = request.body.read
 
@@ -75,7 +82,7 @@ class API < Sinatra::Base
       Bot.start_game(request_data['user']['id'], request_data['original_message'], url)
       # Select type callback
     when 'play:select_position'
-      # rubocop:todo Lint/Loop
+
       begin
         user_id = request_data['user']['id']
         msg = request_data['original_message']
@@ -87,7 +94,7 @@ class API < Sinatra::Base
         Bot.update_board(request_data, chosen, 'X')
         break if Bot.check_winner_draw(user_id, url, msg)
 
-        if $plays[user_id][:turn_number] < 9 # rubocop:todo Style/GlobalVars
+        if $plays[user_id][:turn_number] < 9
           msg['text'] = ' It is my turn.'
           msg['attachments'] = Bot.board_last(user_id)
           API.send_response(url, msg)
@@ -103,15 +110,16 @@ class API < Sinatra::Base
         break if Bot.check_winner_draw(user_id, url, msg)
 
         Bot.start_game(user_id, request_data['original_message'], url)
-      end while false # rubocop:todo Lint/LiteralAsCondition
-      # rubocop:enable Lint/Loop
+      end while false
+
       # Select option callback
     when 'play:finish'
       msg = request_data['original_message']
       msg['text'] = ':ok: If you want to play more, I will be here. Only send any message to me '
       msg['attachments'] = []
       API.send_response(url, msg)
-      $client.im_open(user: user_id) # rubocop:todo Style/GlobalVars
+      client = Slack::Web::Client.new
+      client.conversations_close(users: user_id)
 
     end
     status 200
@@ -126,11 +134,11 @@ class Events
   end
 end
 
-class Bot # rubocop:todo Metrics/ClassLength
-  def self.intro(user_id) # rubocop:todo Metrics/MethodLength
+class Bot
+  def self.intro(user_id)
     # Open IM
-
-    res = $client.im_open(user: user_id) # rubocop:todo Style/GlobalVars
+    client = Slack::Web::Client.new
+    res = client.conversations_open(users: user_id)
     # Attachment with play:start callback ID
     attachments = [{
       color: '#5DFF00',
@@ -158,9 +166,9 @@ class Bot # rubocop:todo Metrics/ClassLength
                        }
                      ]
                    }]
-    unless res.channel.id.nil? # rubocop:todo Style/GuardClause
+    unless res.channel.id.nil?
       # Send message
-      $client.chat_postMessage( # rubocop:todo Style/GlobalVars
+      client.chat_postMessage(
         channel: res.channel.id,
         text: "I am tic-tac-toe bot, and I\'m here to play tic-tac-toe :x: :o: ",
         attachments: attachments.to_json
@@ -170,15 +178,15 @@ class Bot # rubocop:todo Metrics/ClassLength
 
   def self.start_game(user_id, msg, url)
     # Check if game already exists
-    if $plays[user_id].nil? # rubocop:todo Style/GlobalVars
+    if $plays[user_id].nil?
       # Starts new game
-      $plays[user_id] = { # rubocop:todo Style/GlobalVars
+      $plays[user_id] = {
         positions: [1, 2, 3, 4, 5, 6, 7, 8, 9], turn_number: 0
       }
 
     end
     # Sends menu with play:select_position callback
-    msg = { # rubocop:todo Lint/ShadowedArgument
+    msg = {
       text: 'Please choose your position?',
       attachments: board_last(user_id)
     }
@@ -186,8 +194,7 @@ class Bot # rubocop:todo Metrics/ClassLength
     API.send_response(url, msg)
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def self.board_last(user_id) # rubocop:todo Metrics/AbcSize
+  def self.board_last(user_id)
     [{
       color: '#FFA500',
       callback_id: 'play:select_position',
@@ -195,21 +202,21 @@ class Bot # rubocop:todo Metrics/ClassLength
       actions: [
         {
           name: 'start',
-          text: $plays[user_id][:positions][0].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][0].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][0] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][0]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][1].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][1].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][1] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][1]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][2].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][2].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][2] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][2]
         }
       ]
     }, {
@@ -219,21 +226,21 @@ class Bot # rubocop:todo Metrics/ClassLength
       actions: [
         {
           name: 'start',
-          text: $plays[user_id][:positions][3].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][3].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][3] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][3]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][4].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][4].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][4] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][4]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][5].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][5].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][5] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][5]
         }
       ]
     }, {
@@ -243,34 +250,34 @@ class Bot # rubocop:todo Metrics/ClassLength
       actions: [
         {
           name: 'start',
-          text: $plays[user_id][:positions][6].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][6].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][6] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][6]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][7].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][7].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][7] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][7]
         },
         {
           name: 'start',
-          text: $plays[user_id][:positions][8].to_s, # rubocop:todo Style/GlobalVars
+          text: $plays[user_id][:positions][8].to_s,
           type: 'button',
-          value: $plays[user_id][:positions][8] # rubocop:todo Style/GlobalVars
+          value: $plays[user_id][:positions][8]
         }
       ]
     }]
   end
-  # rubocop:enable Metrics/MethodLength
 
   # Check if user has order to handle dm
   def self.handle_direct_message(msg)
     user = msg['user']
-    if $plays[user].nil? # rubocop:todo Style/GlobalVars
+    if $plays[user].nil?
       intro(user)
     else
-      $client.chat_postMessage( # rubocop:todo Style/GlobalVars
+      client = Slack::Web::Client.new
+      client.chat_postMessage(
         channel: msg['channel'],
         text: 'Let\'s keep playing the last game'
       )
@@ -280,12 +287,12 @@ class Bot # rubocop:todo Metrics/ClassLength
   def self.update_board(request_data, chosen, symbol)
     user_id = request_data['user']['id']
     # update chosen number
-    $plays[user_id][:positions][chosen - 1] = symbol # rubocop:todo Style/GlobalVars
+    $plays[user_id][:positions][chosen - 1] = symbol
     increase_turn_number(user_id)
   end
 
   def self.increase_turn_number(user_id)
-    $plays[user_id][:turn_number] += 1 # rubocop:todo Style/GlobalVars
+    $plays[user_id][:turn_number] += 1
   end
 
   def self.choose_position(user_id)
@@ -294,12 +301,12 @@ class Bot # rubocop:todo Metrics/ClassLength
       return available_positions.uniq.select { |item| available_positions.count(item) == 1 }[0]
     end
 
-    $plays[user_id][:positions].select { |item| item.class == Integer }.sample # rubocop:todo Style/GlobalVars
+    $plays[user_id][:positions].select { |item| item.class == Integer }.sample
   end
 
-  def self.check_winner_draw(user_id, url, msg) # rubocop:todo Metrics/MethodLength
+  def self.check_winner_draw(user_id, url, msg)
     winner = check_positions(user_id)
-    turn = $plays[user_id][:turn_number] # rubocop:todo Style/GlobalVars
+    turn = $plays[user_id][:turn_number]
     p turn
     p '============='
     if (winner.class == String) || turn == 9
@@ -335,14 +342,14 @@ class Bot # rubocop:todo Metrics/ClassLength
       }]
 
       API.send_response(url, msg)
-      $plays[user_id] = nil # rubocop:todo Style/GlobalVars
+      $plays[user_id] = nil
       return winner
     end
     false
   end
 
   def self.check_positions(user_id)
-    board = $plays[user_id][:positions] # rubocop:todo Style/GlobalVars
+    board = $plays[user_id][:positions]
     grid = [
       [board[0], board[1], board[2]],
       [board[3], board[4], board[5]],
