@@ -94,7 +94,7 @@ class API < Sinatra::Base
       msg['attachments'] = []
       API.send_response(url, msg)
       client = Slack::Web::Client.new
-      client.conversations_close(users: user_id)
+      client.conversations_close(user: user_id)
 
     end
     status 200
