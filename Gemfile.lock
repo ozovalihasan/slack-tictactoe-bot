@@ -17,7 +17,6 @@ GEM
     hashie (4.1.0)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
-    json (2.3.0)
     minitest (5.14.1)
     multipart-post (2.1.1)
     mustermann (1.1.1)
@@ -31,13 +30,12 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.8.1)
       tilt (~> 2.0)
-    slack-ruby-client (0.8.1)
+    slack-ruby-client (0.14.6)
       activesupport
       faraday (>= 0.9)
       faraday_middleware
       gli
       hashie
-      json
       websocket-driver
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -54,7 +52,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv (~> 2.2, >= 2.2.1)
   sinatra (~> 2.0.2)
-  slack-ruby-client (~> 0.8.1)
+  slack-ruby-client (~> 0.14.5)
 
 BUNDLED WITH
    2.1.4

@@ -1,3 +1,5 @@
+require 'slack-ruby-client'
+
 class Bot
   def self.new_game(question)
     [{

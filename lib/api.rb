@@ -1,12 +1,19 @@
+require 'sinatra/base'
+require 'net/http'
+
 class API < Sinatra::Base
   # Send response of message to response_url
   def self.send_response(response_url, msg)
+    p response_url, msg
+    p '=========='
     url = URI.parse(response_url)
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     request = Net::HTTP::Post.new(url)
     request['content-type'] = 'application/json'
     request.body = JSON[msg]
+    p request, http
+    p '----------------'
     http.request(request)
   end
 
