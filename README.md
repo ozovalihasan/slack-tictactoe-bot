@@ -49,7 +49,7 @@ This project is mainly about
 
 - Open the page of app settings and click `Basic Information` at the left side of the page. Under the `App Credentials`, find `Verification Token` and copy it.
 
-- Open the terminal, and run `export SLACK_VERIFICATION_TOKEN=xxxxxxxxxxxxxxxxxxx`. 'xxxxxxxxxxxxxxxxxxx' part must be changed with token tou copied.
+- Open the terminal, and run `export SLACK_VERIFICATION_TOKEN=xxxxxxxxxxxxxxxxxxx`. 'xxxxxxxxxxxxxxxxxxx' part must be changed with token you copied.
 
 Reminder : If you want to share your project, don't add this informations into your project because Slack may disable your app if you share this informations with public.
 
