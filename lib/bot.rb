@@ -191,7 +191,6 @@ class Bot # rubocop:todo Metrics/ClassLength
   private_class_method(:new_game,
                        :intro,
                        :plays,
-                       :handle_direct_message,
                        :increase_turn_number,
                        :check_positions,
                        :check_rows,
