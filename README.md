@@ -55,6 +55,11 @@ Reminder : If you want to share your project, don't add this informations into y
 
 - Make enable Bot user to be always online. To do it, click `App Home` under `Features` title. Check `Always Show My Bot as Online` option.
 
+***
+Steps until here are shown in [the video](https://www.loom.com/share/411ca989c06c4bf189c743cc013af810s)
+*** 
+- Don't forget to reinstall your app
+
 - Run Sinatra by using `rackup` from terminal. This terminal shouldn't be closed when app is used.
 
 - Open another terminal and run `ngrok http -host-header=rewrite 9292`. 9292 is default one, so if it is not work correctly, check terminal run `rackup`. It is seen like `Listening on tcp://localhost:9292`. Again this terminal must be open when the app is used
@@ -68,6 +73,11 @@ Reminder : If you want to share your project, don't add this informations into y
 - ngrok is accepting limited request for a limited time. So, if there will be a lot of interaction between user and bot, the responding time of the bot may increase or it may not respond the user's interaction. If this happened, ngrok can be restarted or you may stop to use the app for a while.
 
 - Go to your Workspace. Refresh page and send a direct message to bot from Slack. It is located under the `Apps` title
+
+
+***
+Steps until here are shown in [the video](https://www.loom.com/share/e245f36c42df4ced94a71b1e832947e9)
+*** 
 
 - If you need more information, you may check [this repository](https://github.com/slackapi/sample-message-menus-ruby)
 
