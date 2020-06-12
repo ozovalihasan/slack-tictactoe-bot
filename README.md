@@ -53,8 +53,6 @@ This project is mainly about
 
 Reminder : If you want to share your project, don't add this informations into your project because Slack may disable your app if you share this informations with public.
 
-- Intall ngrok by running `gem install ngrok`.
-
 - Run Sinatra by using `rackup` from terminal. This terminal shouldn't be closed when app is used.
 
 - Open another terminal and run `ngrok http -host-header=rewrite 9292`. 9292 is default one, so if it is not work correctly, check terminal run `rackup`. It is seen like `Listening on tcp://localhost:9292`. Again this terminal must be open when the app is used
