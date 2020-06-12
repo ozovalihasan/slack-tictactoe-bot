@@ -53,6 +53,8 @@ This project is mainly about
 
 Reminder : If you want to share your project, don't add this informations into your project because Slack may disable your app if you share this informations with public.
 
+- Make enable Bot user to be always online. To do it, click `App Home` under `Features` title. Check `Always Show My Bot as Online` option.
+
 - Run Sinatra by using `rackup` from terminal. This terminal shouldn't be closed when app is used.
 
 - Open another terminal and run `ngrok http -host-header=rewrite 9292`. 9292 is default one, so if it is not work correctly, check terminal run `rackup`. It is seen like `Listening on tcp://localhost:9292`. Again this terminal must be open when the app is used
@@ -64,8 +66,6 @@ Reminder : If you want to share your project, don't add this informations into y
 - If ngrok is restarted, the copied link will be changed automatically. So, you need to follow the last two steps if it is restarted.
 
 - ngrok is accepting limited request for a limited time. So, if there will be a lot of interaction between user and bot, the responding time of the bot may increase or it may not respond the user's interaction. If this happened, ngrok can be restarted or you may stop to use the app for a while.
-
-- Make enable Bot user to be always online. To do it, click `App Home` under `Features` title. Check `Always Show My Bot as Online` option.
 
 - Go to your Workspace. Refresh page and send a direct message to bot from Slack. It is located under the `Apps` title
 
