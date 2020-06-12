@@ -21,9 +21,15 @@ This project is mainly about
 
 ## Setup
 
+- Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`
+
+- Change branch to `readme`
+
 - Install [Bundler](https://github.com/rubygems/bundler) by running `gem install bundler`
 
 - Run `bundle install`
+
+- Create a [workspace](https://slack.com/get-started#/create) to test this app
 
 - Create a [Slack App](https://api.slack.com/start)
 
@@ -45,7 +51,7 @@ Reminder : If you want to share your project, don't add this informations into y
 
 - Open another terminal and run `ngrok http -host-header=rewrite 9292`. 9292 is default one, so if it is not work correctly, check terminal run `rackup`. It is seen like `Listening on tcp://localhost:9292`. Again this terminal must be open when the app is used
 
-- When ngrok run, there should be a link similar to `https://1a2b3c4d5e.ngrok.io`. Copy this link and click 'Your apps' located at the right top of `api.slack.com`. Click your app. Click `Event Subscriptions` at the left side of page. Paste copied link into `Request URL` and add `/slack/events` at the end of link. It should be seen like `https://1a2b3c4d5e.ngrok.io/slack/events`. Lastly, click `Save Changes` at the left bottom part of the page.
+- When ngrok run, there should be a link similar to `https://1a2b3c4d5e.ngrok.io`. Copy this link and click 'Your apps' located at the right top of `api.slack.com`. Click your app. Click `Event Subscriptions` at the left side of page. Paste copied link into `Request URL` and add `/slack/events` at the end of link. It should be seen like `https://1a2b3c4d5e.ngrok.io/slack/events`. Open `Subscribe to bot events` part and add `message.im`. Check `Enable Events`. Lastly, click `Save Changes` at the left bottom part of the page.
 
 - Click `Interactivity & Shortcuts` at the left side of the page. Check button of `Interactivity`. Paste same link into the box of `Request URL`. And add `/slack/attachments` at the end of the link. It should be seen like `https://1a2b3c4d5e.ngrok.io/slack/attachments`. Lastly, click `Save Changes` at the left bottom part of the page.
 
