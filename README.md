@@ -11,10 +11,10 @@ This is a capstone project in the Ruby course at [Microverse](https://www.microv
 ## Built With
 
 - Ruby
-- RSpec
 - Slack API
 - ngrok
 - Sinatra
+- RSpec
 
 ## Description
 
@@ -86,6 +86,17 @@ If you want, [check the demo of the app/bot](https://www.loom.com/share/ce5a36e4
 
 For more information check [Wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe)
 
+## Testing the code
+
+- All methods are tested
+
+To test the project
+
+- Open terminal
+- Run `cd directory-of-project`. It must be seen like `cd Downloads/Slack-tictactoe-bot`   
+- Run `rspec`
+
+
 ## Plans to develop the project
 
 - Providing a live demo of the app/bot
@@ -94,13 +105,13 @@ For more information check [Wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe
 
 ## Questions and answers
 
-- Q: The app/bot is not updated. What do I need to do?
+- The app/bot is not updated. What do I need to do?
 
-* A: Check Gemfile. If versions of used gems are not updated, update them.
+Check Gemfile. If versions of used gems are not updated, update them.
 
-- Q: The app/bot doesn't respond. What do I need to do?
+- The app/bot doesn't respond. What do I need to do?
 
-* A: Check SLACK_VERIFICATION_TOKEN, SLACK_BOT_TOKEN. Check the link provided by ngrok and check the link used for 'Request URL's. Check the terminal run `rackup`. If it shows any error, solve it.
+Check SLACK_VERIFICATION_TOKEN, SLACK_BOT_TOKEN. Check the link provided by ngrok and check the link used for 'Request URL's. Check the terminal run `rackup`. If it shows any error, solve it.
 
 ## Authors
 
