@@ -2,6 +2,12 @@
 
 This is a capstone project in the Ruby course at [Microverse](https://www.microverse.org/) - @microverseinc . Creating bot for any platform for any purpose is the purpose of this capstone project
 
+![tic_tac_toe_game](./assets/screenshot1.png)
+
+![tic_tac_toe_game](./assets/screenshot2.png)
+
+![tic_tac_toe_game](./assets/screenshot3.png)
+
 ## Built With
 
 - Ruby
@@ -21,31 +27,33 @@ This project is mainly about
 
 ## Setup
 
-- Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`
+- Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`.
 
-- Change branch to `readme`
+- Change branch to `readme`.
 
-- Install [Bundler](https://github.com/rubygems/bundler) by running `gem install bundler`
+- Install [Bundler](https://github.com/rubygems/bundler) by running `gem install bundler`.
 
-- Run `bundle install`
+- Run `bundle install`.
 
-- Create a [workspace](https://slack.com/get-started#/create) to test this app
+- Create a [workspace](https://slack.com/get-started#/create) to test this app.
 
-- Create a [Slack App](https://api.slack.com/start)
+- Create a [Slack App](https://api.slack.com/start).
 
-- Open `OAuth & Permissions` located under the `Features` title at the left side of page. Go to `Scopes`, add `mpim:write` and `im:history` for `Bot Token Scopes`
+- Open `OAuth & Permissions` located under the `Features` title at the left side of page. Go to `Scopes`, add `chat:write`, `im:write` and `im:history` for `Bot Token Scopes`.
+   
+- Go to the top of the page. Install your app to your workspace by using `Install App to Workspace` button. If you change any setting, reinstall it.
 
-- Go to the top of the page and copy `Bot User OAuth Access Token`
+- Go to the top of the page and copy `Bot User OAuth Access Token`.
 
-- Open the terminal, and run `export SLACK_BOT_TOKEN=xoxb-000000000000-xxxxxxxxxxxxxxxxxxxxxxxx`
+- Open the terminal, and run `export SLACK_BOT_TOKEN=xoxb-000000000000-xxxxxxxxxxxxxxxxxxxxxxxx`. 'xoxb-000000000000-xxxxxxxxxxxxxxxxxxxxxxxx' part must be changed with token you copied.
 
-- Open the page of app settings and click `Basic Information` at the left side of the page. Under the `App Credentials`, find `Verification Token` and copy it
+- Open the page of app settings and click `Basic Information` at the left side of the page. Under the `App Credentials`, find `Verification Token` and copy it.
 
-- Open the terminal, and run `export SLACK_VERIFICATION_TOKEN=xxxxxxxxxxxxxxxxxxx`
+- Open the terminal, and run `export SLACK_VERIFICATION_TOKEN=xxxxxxxxxxxxxxxxxxx`. 'xxxxxxxxxxxxxxxxxxx' part must be changed with token tou copied.
 
-Reminder : If you want to share your project, don't add this informations into your project because Slack may disable your app if you share this informations with public
+Reminder : If you want to share your project, don't add this informations into your project because Slack may disable your app if you share this informations with public.
 
-- Intall ngrok by running `gem install ngrok`
+- Intall ngrok by running `gem install ngrok`.
 
 - Run Sinatra by using `rackup` from terminal. This terminal shouldn't be closed when app is used.
 
@@ -59,11 +67,9 @@ Reminder : If you want to share your project, don't add this informations into y
 
 - ngrok is accepting limited request for a limited time. So, if there will be a lot of interaction between user and bot, the responding time of the bot may increase or it may not respond the user's interaction. If this happened, ngrok can be restarted or you may stop to use the app for a while.
 
-- Install your app to your workspace. If you change any setting, reinstall it.
-
 - Make enable Bot user to be always online. To do it, click `App Home` under `Features` title. Check `Always Show My Bot as Online` option.
 
-- Go to your Workspace and send a direct message to bot from Slack. It is located under the `Apps` title
+- Go to your Workspace. Refresh page and send a direct message to bot from Slack. It is located under the `Apps` title
 
 - If you need more information, you may check [this repository](https://github.com/slackapi/sample-message-menus-ruby)
 
@@ -71,6 +77,8 @@ Reminder : If you want to share your project, don't add this informations into y
 
 - Send any direct message to the bot
 - Follow the directions given by the bot
+
+If you want, [check the demo of the app/bot](https://www.loom.com/share/ce5a36e4145c4baf96cd615a06faf9b0) 
 
 ## Rules of the Game
 
@@ -82,8 +90,9 @@ For more information check [Wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe
 
 ## Plans to develop the project
 
-- Providing a live demo of the app(bot)
+- Providing a live demo of the app/bot
 - Providing an online server for the code
+- Providing a video to show steps of setup
 
 ## Questions and answers
 

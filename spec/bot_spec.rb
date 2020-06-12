@@ -41,7 +41,7 @@ describe Bot do
   describe '#show_board' do
     it 'returns the lastest view of the board with title  ' do
       Bot.plays('hasan')
-      expect(Bot.show_board('hasan')[:text]).to eql('Please choose your position?')
+      expect(Bot.show_board('hasan')[:text]).to eql('Please choose your position.')
       expect(Bot.show_board('hasan')[:attachments][1][:actions][1][:value]).to eql(5)
     end
   end

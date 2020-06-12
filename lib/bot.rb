@@ -54,7 +54,7 @@ class Bot # rubocop:todo Metrics/ClassLength
 
   def self.show_board(user_id)
     {
-      text: 'Please choose your position?',
+      text: 'Please choose your position.',
       attachments: board_last(user_id)
     }
   end
