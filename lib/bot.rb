@@ -88,17 +88,26 @@ class Bot # rubocop:todo Metrics/ClassLength
 
   # Check if user has order to handle dm
   def self.handle_direct_message(msg)
+    p '111111111111111'
     user_id = msg['user']
+    p '33333333'
     plays(user_id)
+    p '44444'
     if @plays[user_id].nil?
+      p '66666666'
       intro(user_id)
+      p '7777777'
+      
     else
+      p '555'
       client = Slack::Web::Client.new
+      p '66666666'
       client.chat_postMessage(
         channel: msg['channel'],
         text: 'Let\'s keep playing the last game'
       )
     end
+    p '222222222222'
   end
 
   def self.update_board(user_id, chosen, symbol)
