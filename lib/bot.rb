@@ -31,7 +31,7 @@ class Bot # rubocop:todo Metrics/ClassLength
 
   def self.intro(user_id)
     # Open IM
-    client = Slack::Web::Client.new 
+    client = Slack::Web::Client.new
     res = client.conversations_open(users: user_id)
     # Attachment with play:start callback ID
     attachments = new_game('Do you want to start :question:')
@@ -92,7 +92,7 @@ class Bot # rubocop:todo Metrics/ClassLength
     plays(user_id)
     if @plays[user_id].nil?
       intro(user_id)
-      
+
     else
       client = Slack::Web::Client.new
       client.chat_postMessage(
@@ -113,8 +113,7 @@ class Bot # rubocop:todo Metrics/ClassLength
   end
 
   def self.choose_position(user_id)
-    
-    available_positions = check_positions(user_id,'choose')
+    available_positions = check_positions(user_id, 'choose')
     if available_positions.class == Array
       return available_positions.uniq.select { |item| available_positions.count(item) == 1 }[0]
     end
@@ -122,8 +121,8 @@ class Bot # rubocop:todo Metrics/ClassLength
     @plays[user_id][:positions].select { |item| item.class == Integer }.sample
   end
 
-  def self.check_winner_draw(user_id, url, msg)    
-    winner = check_positions(user_id,'win')
+  def self.check_winner_draw(user_id, url, msg)
+    winner = check_positions(user_id, 'win')
     turn = @plays[user_id][:turn_number]
     if (winner.class == String) || turn == 9
       msg['text'] = ':tada::trophy:  Congratulations! :x: You are winner :clap:'
@@ -140,7 +139,7 @@ class Bot # rubocop:todo Metrics/ClassLength
     false
   end
 
-  def self.check_positions(user_id,purpose)
+  def self.check_positions(user_id, purpose)
     board = @plays[user_id][:positions]
 
     grid = [
@@ -149,18 +148,18 @@ class Bot # rubocop:todo Metrics/ClassLength
       [board[6], board[7], board[8]]
     ]
     # check the rows
-    return check_rows(grid,purpose) unless check_rows(grid,purpose).nil?
+    return check_rows(grid, purpose) unless check_rows(grid, purpose).nil?
 
     # check the columns
-    return check_columns(grid,purpose) unless check_columns(grid,purpose).nil?
+    return check_columns(grid, purpose) unless check_columns(grid, purpose).nil?
 
     # check the diagonals
-    return check_diagonals(grid,purpose) unless check_diagonals(grid,purpose).nil?
+    return check_diagonals(grid, purpose) unless check_diagonals(grid, purpose).nil?
 
     nil
   end
 
-  def self.check_rows(grid,purpose)
+  def self.check_rows(grid, purpose)
     if purpose == 'win'
       grid.each { |row| return row.first if all_equal?(row) }
     else
@@ -177,16 +176,16 @@ class Bot # rubocop:todo Metrics/ClassLength
     row.each_cons(2).any? { |x, y| x == y }
   end
 
-  def self.check_columns(grid,purpose)
-    check_rows(grid.transpose,purpose)
+  def self.check_columns(grid, purpose)
+    check_rows(grid.transpose, purpose)
   end
 
-  def self.check_diagonals(grid,purpose)
+  def self.check_diagonals(grid, purpose)
     diagonals = [
       [grid[0][0], grid[1][1], grid[2][2]],
       [grid[2][0], grid[1][1], grid[0][2]]
     ]
-    check_rows(diagonals,purpose)
+    check_rows(diagonals, purpose)
   end
 
   private_class_method(:new_game,

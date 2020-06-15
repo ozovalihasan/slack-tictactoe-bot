@@ -86,19 +86,19 @@ end
 describe Bot do
   describe '#check_winner_draw' do
     context 'if there is no winner ' do
-      it 'returns false if there is any position to play ' do 
-        url = "https://hooks.slack.com/actions/1/1/1"
-        msg = {"bot_id"=>"1", "type"=>"message"}
+      it 'returns false if there is any position to play ' do
+        url = 'https://hooks.slack.com/actions/1/1/1'
+        msg = { 'bot_id' => '1', 'type' => 'message' }
         Bot.send(:plays, 'ali')
         Bot.start_game('tom')
         Bot.update_board('tom', 1, 'X')
         Bot.update_board('tom', 4, 'X')
         expect(Bot.check_winner_draw('tom', url, msg)).to eql(false)
-      end    
-    
-      it 'returns draw if there is no any position to play ' do 
-        url = "https://hooks.slack.com/actions/1/1/1"
-        msg = {"bot_id"=>"1", "type"=>"message"}
+      end
+
+      it 'returns draw if there is no any position to play ' do
+        url = 'https://hooks.slack.com/actions/1/1/1'
+        msg = { 'bot_id' => '1', 'type' => 'message' }
         Bot.update_board('tom', 7, 'O')
         Bot.update_board('tom', 2, 'O')
         Bot.update_board('tom', 5, 'O')
@@ -111,8 +111,8 @@ describe Bot do
     end
     context 'if there is a winner' do
       it 'returns the symbol of winner' do
-        url = "https://hooks.slack.com/actions/1/1/1"
-        msg = {"bot_id"=>"1", "type"=>"message"}
+        url = 'https://hooks.slack.com/actions/1/1/1'
+        msg = { 'bot_id' => '1', 'type' => 'message' }
         Bot.send(:plays, 'ali')
         Bot.start_game('ali')
         Bot.update_board('ali', 1, 'X')
@@ -127,25 +127,25 @@ end
 describe Bot do
   describe '#check_positions' do
     context 'if winning or drawing conditions are checking' do
-      it 'return nil if three same symbol is not on the same row, column or diagonal' do
-        expect(Bot.send(:check_positions, 'hasan','win')).to eql nil
+      it 'returns nil if three same symbol is not on the same row, column or diagonal' do
+        expect(Bot.send(:check_positions, 'hasan', 'win')).to eql nil
       end
-      
+
       it 'returns row,column or diagonal as array if three same symbol is on the same row, column or diagonal' do
         Bot.update_board('hasan', 3, 'X')
-        expect(Bot.send(:check_positions, 'hasan','win')).to eql 'X'
-      end      
+        expect(Bot.send(:check_positions, 'hasan', 'win')).to eql 'X'
+      end
     end
 
     context 'if any number is chosen' do
       it 'returns row,column or diagonal as array if two same symbol is on the same row, column or diagonal' do
         Bot.update_board('hasan', 4, 'X')
-        expect(Bot.send(:check_positions, 'hasan','choose').class).to eql Array
+        expect(Bot.send(:check_positions, 'hasan', 'choose').class).to eql Array
       end
 
-      it 'return nil if two same symbol is not on the same row, column or diagonal' do
+      it 'returns nil if two same symbol is not on the same row, column or diagonal' do
         Bot.update_board('hasan', 7, 'X')
-        expect(Bot.send(:check_positions, 'hasan','choose')).to eql nil
+        expect(Bot.send(:check_positions, 'hasan', 'choose')).to eql nil
       end
     end
   end
@@ -155,20 +155,20 @@ describe Bot do
   describe '#check_rows' do
     context 'if any number is chosen' do
       it 'returns array if two same symbol is on the same row' do
-        expect(Bot.send(:check_rows, [['X', 'X', 3]],'choose')).to eql ['X', 'X', 3]
+        expect(Bot.send(:check_rows, [['X', 'X', 3]], 'choose')).to eql ['X', 'X', 3]
       end
 
       it 'returns nil if two same symbol is not on the same row' do
-        expect(Bot.send(:check_rows, [['X', 2, 3]],'choose')).to eql nil
+        expect(Bot.send(:check_rows, [['X', 2, 3]], 'choose')).to eql nil
       end
     end
     context 'if winning or drawing conditions are being checked' do
       it 'returns the symbol of the winner if two same symbol is on the same row' do
-        expect(Bot.send(:check_rows, [['X', 'X', 'X']],'win')).to eql 'X'
+        expect(Bot.send(:check_rows, [%w[X X X]], 'win')).to eql 'X'
       end
 
       it 'returns nil if two same symbol is not on the same row' do
-        expect(Bot.send(:check_rows, [['X', 2, 3]],'win')).to eql nil
+        expect(Bot.send(:check_rows, [['X', 2, 3]], 'win')).to eql nil
       end
     end
   end
@@ -192,7 +192,7 @@ describe Bot do
       expect(Bot.send(:any_equal?, ['X', 'X', 3])).to eql true
     end
 
-    it 'returns true if any two elements are not same' do
+    it 'returns false if any two elements are not same' do
       expect(Bot.send(:any_equal?, ['X', 2, 3])).to eql false
     end
   end
@@ -202,20 +202,20 @@ describe Bot do
   describe '#check_columns' do
     context 'if any number is chosen' do
       it 'returns array if two same symbol is on the same column' do
-        expect(Bot.send(:check_columns, [['X'], ['X'], [2]],'choose')).to eql(['X', 'X', 2])
+        expect(Bot.send(:check_columns, [['X'], ['X'], [2]], 'choose')).to eql(['X', 'X', 2])
       end
 
       it 'returns nil if two same symbol is not on the same column' do
-        expect(Bot.send(:check_columns, [['X'], [2], [3]],'choose')).to eql nil
+        expect(Bot.send(:check_columns, [['X'], [2], [3]], 'choose')).to eql nil
       end
     end
     context 'if winning or drawing conditions are checked' do
       it 'returns the symbol of the winner if three same symbol is on the same column' do
-        expect(Bot.send(:check_columns, [['X'], ['X'], ['X']],'win')).to eql('X')
+        expect(Bot.send(:check_columns, [['X'], ['X'], ['X']], 'win')).to eql('X')
       end
 
       it 'returns nil if three same symbol is not on the same column' do
-        expect(Bot.send(:check_columns, [['X'], [2], [3]],'win')).to eql nil
+        expect(Bot.send(:check_columns, [['X'], [2], [3]], 'win')).to eql nil
       end
     end
   end
@@ -225,20 +225,20 @@ describe Bot do
   describe '#check_columns' do
     context 'if any number is chosen' do
       it 'returns array if two same symbol is on the same diagonal' do
-        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 'X', 6], [7, 8, 9]],'choose')).to eql(['X', 'X', 9])
+        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 'X', 6], [7, 8, 9]], 'choose')).to eql(['X', 'X', 9])
       end
 
       it 'returns nil if two same symbol is not on the same diagonal' do
-        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 5, 6], [7, 8, 9]],'choose')).to eql nil
+        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 5, 6], [7, 8, 9]], 'choose')).to eql nil
       end
     end
     context 'if winning or drawing conditions are checking' do
       it 'returns the symbol of winner if three same symbol is on the same diagonal' do
-        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 'X', 6], [7, 8, 'X']],'win')).to eql('X')
+        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 'X', 6], [7, 8, 'X']], 'win')).to eql('X')
       end
 
       it 'returns nil if hree same symbol is not on the same diagonal' do
-        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 5, 6], [7, 8, 9]],'win')).to eql nil
+        expect(Bot.send(:check_diagonals, [['X', 2, 3], [4, 5, 6], [7, 8, 9]], 'win')).to eql nil
       end
     end
   end
