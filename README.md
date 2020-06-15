@@ -138,9 +138,13 @@ Check Gemfile. If versions of used gems are not updated, update them.
 
 Check SLACK_VERIFICATION_TOKEN, SLACK_BOT_TOKEN. Check the link provided by ngrok and check the link used for 'Request URL's. Check the terminal run `rackup`. If it shows any error, solve it.
 
-- When `bundle install` run, `ERROR: Error installing websocket-driver:` is reasing. What do I need to do
+- When `bundle install` run, `ERROR: Error installing websocket-driver:` is reasing. What do I need to do?
 
 Try to run `apt-get install ruby-dev`
+
+- I did everyting correctly, but it is not working. What do I need to do?
+
+Run `gem list`. If you have any gem whose version is greater than one given in `Gemfile.lock` file, delete new version of this gem.  
 
 ## Authors
 

@@ -6,7 +6,6 @@ require 'uri'
 require 'net/http'
 require_relative '../lib/bot'
 require_relative '../lib/api'
-require_relative '../lib/events'
 
 Slack.configure do |config|
   config.token = ENV['SLACK_BOT_TOKEN']
