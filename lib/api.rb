@@ -16,6 +16,7 @@ class API < Sinatra::Base
   post '/slack/events' do
     request_data = JSON.parse(request.body.read)
 
+    
     case request_data['type']
     when 'url_verification'
       # URL Verification event with challenge parameter
@@ -26,13 +27,13 @@ class API < Sinatra::Base
 
       team_id = request_data['team_id']
       event_data = request_data['event']
+
       case event_data['type']
         # Message IM event
       when 'message'
         return if event_data['subtype'] == 'bot_message' || event_data['subtype'] == 'message_changed'
-
         Events.message(team_id, event_data)
-      else
+        else
         puts "Unexpected events\n"
       end
       status 200
@@ -40,14 +41,17 @@ class API < Sinatra::Base
   end
 
   post '/slack/attachments' do # rubocop:todo Metrics/BlockLength
-    request.body.rewind
-    request_data = request.body.read
 
+    request.body.rewind
+    
+    request_data = request.body.read
     # Convert
     request_data = URI.decode_www_form_component(request_data, Encoding::UTF_8)
-
+    
     # Parse and remove "payload=" from beginning of string
     request_data = JSON.parse(request_data.sub!('payload=', ''))
+
+    
     url = request_data['response_url']
     user_id = request_data['user']['id']
     msg = request_data['original_message']
