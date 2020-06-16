@@ -31,8 +31,6 @@ This project is mainly about
 
 - Run `cd Slack-tictactoe-bot`
 
-- Change branch to `readme`.
-
 - Install ngrok by running `snap install ngrok` (I used [Snap store](https://snapcraft.io/ngrok). If you don't use Snap store, check the alternatives)
 
 - Install [ruby](https://ruby-doc.org/downloads/)
@@ -114,8 +112,6 @@ To test the project
 - Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`.
 
 - Run `cd Slack-tictactoe-bot`
-
-- Change branch to `readme`.
 
 - Install [Bundler](https://github.com/rubygems/bundler) by running `gem install bundler`.
 
