@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
+ruby '~> 2.5.1'
 
 gem 'dotenv', '~> 2.2', '>= 2.2.1'
 gem 'rspec', '~> 3.9'
