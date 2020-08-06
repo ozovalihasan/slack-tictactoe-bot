@@ -1,4 +1,4 @@
-# Slack-tictactoe-bot [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/ozovalihasan/Slack-tictactoe-bot) ![GitHub followers](https://img.shields.io/github/followers/ozovalihasan?label=ozovalihasan&style=social)
+# Slack-tictactoe-bot [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/ozovalihasan/slack-tictactoe-bot) ![GitHub followers](https://img.shields.io/github/followers/ozovalihasan?label=ozovalihasan&style=social)
 
 This is a capstone project in the Ruby course at [Microverse](https://www.microverse.org/) - @microverseinc . Creating a bot for any platform for any purpose is the purpose of this capstone project.
 
@@ -33,9 +33,9 @@ This project is mainly about
 
 ## Setup
 
-- Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`.
+- Clone this repository by running `git clone https://github.com/ozovalihasan/slack-tictactoe-bot.git`.
 
-- Run `cd Slack-tictactoe-bot`.
+- Run `cd slack-tictactoe-bot`.
 
 - Install ngrok by running `snap install ngrok` (I used [Snap store](https://snapcraft.io/ngrok). If you don't use Snap store, check the alternatives).
 
@@ -115,9 +115,9 @@ For more information check [Wikipedia](https://en.wikipedia.org/wiki/Tic-tac-toe
 
 To test the project.
 
-- Clone this repository by running `git clone https://github.com/ozovalihasan/Slack-tictactoe-bot.git`.
+- Clone this repository by running `git clone https://github.com/ozovalihasan/slack-tictactoe-bot.git`.
 
-- Run `cd Slack-tictactoe-bot`.
+- Run `cd slack-tictactoe-bot`.
 
 - Install [Bundler](https://github.com/rubygems/bundler) by running `gem install bundler`.
 
@@ -178,7 +178,7 @@ Run `gem list`. If you have any gem whose version is greater than one given in `
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/ozovalihasan/Slack-tictactoe-bot/issues).
+Feel free to check the [issues page](https://github.com/ozovalihasan/slack-tictactoe-bot/issues).
 
 ## Acknowledgements
 
