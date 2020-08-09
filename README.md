@@ -2,11 +2,7 @@
 
 This is a capstone project in the Ruby course at [Microverse](https://www.microverse.org/) - @microverseinc . Creating a bot for any platform for any purpose is the purpose of this capstone project.
 
-![tic_tac_toe_game](./assets/screenshot1.png)
-
-![tic_tac_toe_game](./assets/screenshot2.png)
-
-![tic_tac_toe_game](./assets/screenshot3.png)
+![tic_tac_toe_game](./assets/tictactoe.gif)
 
 ## Built With
 
