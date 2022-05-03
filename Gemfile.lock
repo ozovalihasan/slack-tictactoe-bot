@@ -28,7 +28,7 @@ GEM
     parser (2.7.1.3)
       ast (~> 2.4.0)
     rack (2.2.3)
-    rack-protection (2.0.8.1)
+    rack-protection (2.2.0)
       rack
     rainbow (3.0.0)
     rexml (3.2.4)
@@ -54,11 +54,11 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.10.1)
-    ruby2_keywords (0.0.2)
-    sinatra (2.0.8.1)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
       mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.8.1)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
       tilt (~> 2.0)
     slack-ruby-client (0.14.6)
       activesupport
@@ -84,7 +84,7 @@ DEPENDENCIES
   dotenv (~> 2.2, >= 2.2.1)
   rspec (~> 3.9)
   rubocop (~> 0.81.0)
-  sinatra (~> 2.0.2)
+  sinatra (~> 2.2.0)
   slack-ruby-client (~> 0.14.6)
 
 RUBY VERSION
