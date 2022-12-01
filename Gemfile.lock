@@ -22,13 +22,13 @@ GEM
     jaro_winkler (1.5.4)
     minitest (5.14.1)
     multipart-post (2.1.1)
-    mustermann (1.1.1)
+    mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
     parallel (1.19.1)
     parser (2.7.1.3)
       ast (~> 2.4.0)
-    rack (2.2.3)
-    rack-protection (2.0.8.1)
+    rack (2.2.4)
+    rack-protection (2.2.3)
       rack
     rainbow (3.0.0)
     rexml (3.2.4)
@@ -54,11 +54,11 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.10.1)
-    ruby2_keywords (0.0.2)
-    sinatra (2.0.8.1)
-      mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.8.1)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.3)
+      mustermann (~> 2.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.3)
       tilt (~> 2.0)
     slack-ruby-client (0.14.6)
       activesupport
@@ -68,7 +68,7 @@ GEM
       hashie
       websocket-driver
     thread_safe (0.3.6)
-    tilt (2.0.10)
+    tilt (2.0.11)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
@@ -84,7 +84,7 @@ DEPENDENCIES
   dotenv (~> 2.2, >= 2.2.1)
   rspec (~> 3.9)
   rubocop (~> 0.81.0)
-  sinatra (~> 2.0.2)
+  sinatra (~> 2.2.3)
   slack-ruby-client (~> 0.14.6)
 
 RUBY VERSION
